@@ -890,4 +890,154 @@ graph TD
   - REST API (JSON)
   - MQTT Protocol
   - WebSockets (opcional, tiempo real)
+
+```mermaid
+flowchart LR
+    %% Estilos mejorados
+    classDef entity fill:#E3F2FD,stroke:#1976D2,stroke-width:3px,color:#000;
+    classDef relation fill:#FFF9C4,stroke:#F57C00,stroke-width:3px,color:#000;
+    classDef attributePK fill:#C8E6C9,stroke:#388E3C,stroke-width:2px,color:#000;
+    classDef attributeFK fill:#FFCCBC,stroke:#D84315,stroke-width:2px,color:#000;
+    classDef attributeNormal fill:#F5F5F5,stroke:#616161,stroke-width:2px,color:#000;
+
+    %% Entidad STREETS y sus atributos
+    subgraph SG1["  "]
+        A_ST_1([<u>street_id</u><br/>PK]):::attributePK
+        A_ST_2([street_name]):::attributeNormal
+        A_ST_3([district]):::attributeNormal
+        A_ST_4([neighborhood]):::attributeNormal
+        A_ST_5([latitude_start]):::attributeNormal
+        A_ST_6([latitude_end]):::attributeNormal
+        A_ST_7([longitude_start]):::attributeNormal
+        A_ST_8([longitude_end]):::attributeNormal
+        
+        A_ST_1 -.-> STREETS
+        A_ST_2 -.-> STREETS
+        A_ST_3 -.-> STREETS
+        A_ST_4 -.-> STREETS
+        A_ST_5 -.-> STREETS
+        A_ST_6 -.-> STREETS
+        A_ST_7 -.-> STREETS
+        A_ST_8 -.-> STREETS
+        
+        STREETS[<b>STREETS</b>]:::entity
+    end
+
+    %% Relación CONTAINS
+    STREETS ===|1| REL_CONTAINS{<b>contains</b>}:::relation
+    REL_CONTAINS ===|N| SENSORS
+
+    %% Entidad SENSORS y sus atributos
+    subgraph SG2["  "]
+        A_SE_1([<u>sensor_id</u><br/>PK]):::attributePK
+        A_SE_2([sensor_type]):::attributeNormal
+        A_SE_3([street_id<br/>FK]):::attributeFK
+        
+        A_SE_1 -.-> SENSORS
+        A_SE_2 -.-> SENSORS
+        A_SE_3 -.-> SENSORS
+        
+        SENSORS[<b>SENSORS</b>]:::entity
+    end
+
+    %% Relaciones GENERATES
+    SENSORS ===|1| REL_GEN_1{<b>generates</b>}:::relation
+    REL_GEN_1 ===|N| READINGS
+
+    SENSORS ===|1| REL_GEN_2{<b>generates</b>}:::relation
+    REL_GEN_2 ===|N| TRAFFIC
+
+    SENSORS ===|1| REL_GEN_3{<b>generates</b>}:::relation
+    REL_GEN_3 ===|N| LIGHT
+
+    SENSORS ===|1| REL_GEN_4{<b>generates</b>}:::relation
+    REL_GEN_4 ===|N| DISPLAY
+
+    SENSORS ===|1| REL_GEN_5{<b>generates</b>}:::relation
+    REL_GEN_5 ===|N| OTHER
+
+    %% Entidad SENSOR_READINGS
+    subgraph SG3["  "]
+        A_SR_1([sensor_id<br/>FK]):::attributeFK
+        A_SR_2([timestamp]):::attributeNormal
+        A_SR_3([temperature_celsius]):::attributeNormal
+        A_SR_4([humidity_percent]):::attributeNormal
+        A_SR_5([pressure_hpa]):::attributeNormal
+        A_SR_6([altitude_meters]):::attributeNormal
+        
+        A_SR_1 -.-> READINGS
+        A_SR_2 -.-> READINGS
+        A_SR_3 -.-> READINGS
+        A_SR_4 -.-> READINGS
+        A_SR_5 -.-> READINGS
+        A_SR_6 -.-> READINGS
+        
+        READINGS[<b>SENSOR_READINGS</b>]:::entity
+    end
+
+    %% Entidad TRAFFIC_COUNTER_READINGS
+    subgraph SG4["  "]
+        A_TC_1([sensor_id<br/>FK]):::attributeFK
+        A_TC_2([timestamp]):::attributeNormal
+        A_TC_3([vehicle_count]):::attributeNormal
+        A_TC_4([pedestrian_count]):::attributeNormal
+        A_TC_5([bicycle_count]):::attributeNormal
+        A_TC_6([traffic_density]):::attributeNormal
+        
+        A_TC_1 -.-> TRAFFIC
+        A_TC_2 -.-> TRAFFIC
+        A_TC_3 -.-> TRAFFIC
+        A_TC_4 -.-> TRAFFIC
+        A_TC_5 -.-> TRAFFIC
+        A_TC_6 -.-> TRAFFIC
+        
+        TRAFFIC[<b>TRAFFIC_COUNTER_<br/>READINGS</b>]:::entity
+    end
+
+    %% Entidad TRAFFIC_LIGHT_READINGS
+    subgraph SG5["  "]
+        A_TL_1([sensor_id<br/>FK]):::attributeFK
+        A_TL_2([timestamp]):::attributeNormal
+        A_TL_3([current_state]):::attributeNormal
+        A_TL_4([cycle_duration]):::attributeNormal
+        A_TL_5([malfunction]):::attributeNormal
+        
+        A_TL_1 -.-> LIGHT
+        A_TL_2 -.-> LIGHT
+        A_TL_3 -.-> LIGHT
+        A_TL_4 -.-> LIGHT
+        A_TL_5 -.-> LIGHT
+        
+        LIGHT[<b>TRAFFIC_LIGHT_<br/>READINGS</b>]:::entity
+    end
+
+    %% Entidad INFORMATION_DISPLAY_READINGS
+    subgraph SG6["  "]
+        A_ID_1([sensor_id<br/>FK]):::attributeFK
+        A_ID_2([timestamp]):::attributeNormal
+        A_ID_3([current_message]):::attributeNormal
+        A_ID_4([display_status]):::attributeNormal
+        A_ID_5([energy_consumption]):::attributeNormal
+        
+        A_ID_1 -.-> DISPLAY
+        A_ID_2 -.-> DISPLAY
+        A_ID_3 -.-> DISPLAY
+        A_ID_4 -.-> DISPLAY
+        A_ID_5 -.-> DISPLAY
+        
+        DISPLAY[<b>INFORMATION_<br/>DISPLAY_READINGS</b>]:::entity
+    end
+
+    %% Entidad OTHER
+    subgraph SG7["  "]
+        A_OT_1([sensor_id<br/>FK]):::attributeFK
+        A_OT_2([timestamp]):::attributeNormal
+        A_OT_3([JSON_data]):::attributeNormal
+        
+        A_OT_1 -.-> OTHER
+        A_OT_2 -.-> OTHER
+        A_OT_3 -.-> OTHER
+        
+        OTHER[<b>OTHER</b>]:::entity
+    end
 ```

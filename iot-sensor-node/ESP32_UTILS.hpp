@@ -1,0 +1,97 @@
+#ifndef ESP32_UTILS_HPP
+#define ESP32_UTILS_HPP
+
+#include <WiFi.h>
+
+// ============================================
+// FUNCIONES DE CONEXIÓN WIFI
+// ============================================
+
+/**
+ * Conecta el ESP32 a una red WiFi en modo Estación (STA).
+ * @param useStaticIP: true para usar IP estática, false para DHCP
+ */
+void ConnectWifi_STA(bool useStaticIP = false) {
+    Serial.println("");
+    Serial.println("===========================================");
+    Serial.println("Conectando a WiFi...");
+    Serial.println("===========================================");
+    
+    WiFi.mode(WIFI_STA);// Set station mode para conectarse a un router
+    WiFi.setHostname(hostname);
+    
+    WiFi.begin(ssid, password);
+
+    if (useStaticIP) {
+        WiFi.config(ip, gateway, subnet);
+    }
+    
+    int attempts = 0;
+    while (WiFi.status() != WL_CONNECTED && attempts < 50) {
+        delay(500);
+        Serial.print(".");
+        attempts++;
+    }
+    
+    if (WiFi.status() == WL_CONNECTED) {
+        Serial.println("");
+        Serial.println("✓ WiFi Conectado");
+        Serial.print("  SSID: ");
+        Serial.println(ssid);
+        Serial.print("  IP: ");
+        Serial.println(WiFi.localIP());
+        Serial.print("  Señal: ");
+        Serial.print(WiFi.RSSI());
+        Serial.println(" dBm");
+    } else {
+        Serial.println("");
+        Serial.println("✗ Error: No se pudo conectar a WiFi");
+        Serial.println("  Verifica las credenciales en config.h");
+    }
+    Serial.println("===========================================");
+}
+
+/**
+ * Conecta el ESP32 como Punto de Acceso (AP)
+ * @param useStaticIP: true para configurar IP del AP
+ */
+
+// [x] Mirar si tiene que ser un AP o se conecta por WIFI
+void ConnectWifi_AP(bool useStaticIP = false) {
+    Serial.println("");
+    Serial.println("===========================================");
+    Serial.println("Iniciando Punto de Acceso...");
+    Serial.println("===========================================");
+    
+    WiFi.mode(WIFI_AP);
+    
+    while (!WiFi.softAP(ssid, password)) {
+        Serial.print(".");
+        delay(100);
+    }
+    
+    if (useStaticIP) {
+        WiFi.softAPConfig(ip, gateway, subnet);
+    }
+    
+    Serial.println("");
+    Serial.println("✓ Punto de Acceso iniciado");
+    Serial.print("  SSID: ");
+    Serial.println(ssid);
+    Serial.print("  IP: ");
+    Serial.println(WiFi.softAPIP());
+    Serial.println("===========================================");
+}
+
+/**
+ * Verifica y reconecta WiFi si es necesario
+ */
+void CheckWiFiConnection() {
+    if (WiFi.status() != WL_CONNECTED) {
+        Serial.println("⚠ WiFi desconectado. Reconectando...");
+        ConnectWifi_STA(false);
+    }
+}
+
+
+#endif
