@@ -15,6 +15,7 @@ The ecosystem follows a high-availability hybrid communication model: **Publish-
 ```mermaid
 flowchart TD
     subgraph Devices["Network Devices"]
+<<<<<<< HEAD
         edge_node["IoT Edge Station<br/>(ESP32 + BME280)"]
         actuators["Screens / Traffic Lights<br/>(Simulator/Actuator)"]
     end
@@ -36,6 +37,29 @@ flowchart TD
     tomcat -->|"Persistence"| postgres
     android -->|"API REST / JSON - HTTP Port 3002"| tomcat
     android -.->|"Real-time update - MQTT Port 3000"| broker
+=======
+        edge_node["IoT Edge Station<br>(ESP32 + BME280)"]
+        actuators["Screens / Traffic Lights<br>(Simulator/Actuator)"]
+    end
+
+    subgraph Infra["Docker Infrastructure"]
+        broker["Mosquitto MQTT Broker<br>(mqtt-broker)"]
+        tomcat["Tomcat Application Server<br>(tomcat-server)<br>[Backend Java EE]"]
+        postgres[("PostgreSQL Database<br>(base-datos)")]
+    end
+
+    subgraph UIs["User Interfaces"]
+        android["Mobile Dashboard App<br>(Native Android + OpenStreetMap)"]
+    end
+
+    %% Flows
+    edge_node -->|Publish readings<br>MQTT (Port 3000)| broker
+    broker -->|Receive commands<br>MQTT (Port 3000)| actuators
+    broker -->|Async ingestion| tomcat
+    tomcat -->|Persistence| postgres
+    android -->|API REST / JSON<br>HTTP (Port 3002)| tomcat
+    android -.->|Real-time update<br>MQTT (Port 3000)| broker
+>>>>>>> 8f4a145a7fc5126bfc41dee692d5379738ada970
 ```
 
 ---
