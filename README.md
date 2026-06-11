@@ -2,7 +2,8 @@
 
 [![Tech Stack](https://img.shields.io/badge/Stack-Java%20%7C%20C%2B%2B%20%7C%20Docker%20%7C%20Android-blue.svg)](#technologies-and-tools)
 [![Architecture](https://img.shields.io/badge/Architecture-Event--Driven%20%7C%20Microservices-orange.svg)](#system-architecture)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Course](https://img.shields.io/badge/Course-Ubiquitous_Computing-red.svg)](#academic-context)
+[![Institution](https://img.shields.io/badge/Institution-University_of_Alcalá-yellow.svg)](#academic-context)
 
 A complete, industrial-grade ecosystem for real-time management and monitoring of a **Smart City**. The system integrates physical sensor nodes (IoT Edge), an event-driven message broker (MQTT), a containerized enterprise backend server (Java EE + Docker), and a native mobile client (Android) featuring interactive maps of Madrid.
 
